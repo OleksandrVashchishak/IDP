@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        const array = [9, 1, 5, 7, 4, 66, 11, 23, 43, 54, 767, 87, 12, 1, 2, 3, 544, 6]
+        console.log(array, 'array');
+        //== START BUBBLE SORT ==//
+        // Порівнюєм index і index + 1
+        // якшо index більший ніж index + 1
+        // то міняємо їх місцями
+        const bubbleSort = arr => {
+            for (let j = 0; j < arr.length; j++) {
+                for (let i = 0; i < arr.length; i++) {
+                    if (arr[i] > arr[i + 1]) {
+                        const buff = arr[i]
+                        arr[i] = arr[i + 1]
+                        arr[i + 1] = buff
+                    }
+                }
+            }
+            return arr
+        }
+        // console.time('Bubble sort timer')
+        // console.log('Bubble sort - ', bubbleSort(array).join(','));
+        // console.timeEnd('Bubble sort timer')
+        //== END BUBBLE SORT ==//
+
+        //== START SELECTION SORT ==//
+        // !!внутрішній цикл крутиться і постійно видає найменше значення!!
+        // min рівне index
+        // Порівнюєм index і index + 1
+        // якшо index більше index + 1, min рівне index + 1
+        const selectionSort = arr => {
+            for (let i = 0; i < arr.length - 1; i++) {
+                let min = i;
+                for (let j = i + 1; j < arr.length; j++) {
+                    if (arr[i] > arr[i + 1]) {
+                        min = j;
+                    }
+                }
+                let minValue = arr[min];
+                arr[min] = arr[i];
+                arr[i] = minValue;
+            }
+            return arr;
+        }
+        // console.log('Selection sort - ', selectionSort(array).join(','));
+        //== END SELECTION SORT ==//
+
+        //== START QUICK SORT ==//
+        // береться перший емент масива, шо приходить - current
+        // Створюється два масива more, less
+        // Якшо елемент масива > current, то йде в more, якшо < то в лес
+        // В кінці масиви об"єднюються less + current + more
+        // Та функція рекурсивно викликається arr.lenght разів
+        const quickSort = (arr) => {
+            if (arr.length == 0) {
+                return [];
+            }
+
+            let more = []
+            let less = []
+            let current = arr[0];
+            for (let i = 1; i < arr.length; i++) {
+                if (arr[i] < current) {
+                    less.push(arr[i])
+                } else {
+                    more.push(arr[i])
+                }
+            }
+
+            return quickSort(less).concat(current, quickSort(more));
+        }
+        // console.time('Quick sort timer')
+        // console.log('Quick sort - ', quickSort(array).join(','));
+        // console.timeEnd('Quick sort timer')
+        //== END QUICK SORT ==//
+
+        //== START INSERTION SORT ==//
+        // крутимо вайл, від кінця до початку для кожного елементу масиву, j--
+        // і пересуваємо елемент в потрібне положеня з права на ліво
+        const insertionSort = arr => {
+            for (let i = 0; i < 3; i++) {
+                let v = arr[i]
+                let j = i - 1;
+                while (j >= 0 && arr[j] > v) {
+                    arr[j + 1] = arr[j];
+                    j--;
+                }
+                arr[j + 1] = v;
+            }
+            return arr;
+        }
+        // console.log('Insertion sort - ', insertionSort(array).join(','));
+        //== END INSERTION SORT ==//
+
+        //== START COUNTING SORT ==//
+        // Вираховується кількість елементів менших за arr[i]
+        // І на основі цього елемент переміщаєься на потрібну позицію
+        const countingSort = arr => {
+            let Count = []
+            let newArr = [];
+            for (let i = 0; i < arr.length; i++) {
+                Count[i] = 0;
+            }
+            for (let i = 0; i < arr.length - 1; i++) {
+                for (let j = i + 1; j < arr.length; j++) {
+                    if (arr[i] < arr[j]) {
+                        Count[j]++;
+                    } else {
+                        Count[i]++;
+                    }
+                }
+            }
+            for (let i = 0; i < arr.length; i++) {
+                newArr[Count[i]] = arr[i];
+            }
+            return newArr;
+        }
+        // console.log('Counting sort - ', countingSort(array).join(','));
+        //== END COUNTING SORT ==//
+
+        //== START SHELL SORT ==//
+        // step == length / 2
+        const shellSort = arr => {
+            let step = Math.floor(arr.length / 2)
+            while (step > 0) {
+                for (let j = 0; j < arr.length; j++) {
+                    let k = j
+                    let t = arr[j];
+                    while (k >= step && arr[k - step] > t) {
+                        arr[k] = arr[k - step];
+                        k -= step;
+                    }
+                    arr[k] = t;
+                }
+                step = (step == 2) ? 1 : Math.floor(step * 5 / 11);
+            }
+            return arr;
+        }
+        console.log('Shell sort - ', shellSort(array).join(','));
+        //== END SHELL SORT ==//
+
+         //== START GNOME SORT ==//
+         const gnomeSort = A => {
+            let n = A.length
+            let i = 1
+            let j = 2;
+            while (i < n) {
+                if (A[i - 1] < A[i]) {
+                    i = j; j++;
+                } else {
+                    var t = A[i - 1];
+                    A[i - 1] = A[i];
+                    A[i] = t;
+                    i--;
+                    if (i == 0) {
+                        i = j; j++;
+                    }
+                }
+            }
+            return A;
+        }
+        // console.log('Gnome sort - ', gnomeSort(array).join(','));
+        //== END GNOME SORT ==//
+
+        //== START HEAP SORT ==//
+        const heapSort = A => {
+            if (A.length == 0) {
+                return []
+            };
+            let n = A.length
+            let i = Math.floor(n / 2)
+            let j, k, t;
+            while (true) {
+                if (i > 0) {
+                    t = A[--i];
+                }
+                else {
+                    n--;
+                    if (n == 0) return A;
+                    t = A[n]; A[n] = A[0];
+                }
+                j = i;
+                k = j * 2 + 1;
+                while (k < n) {
+                    if (k + 1 < n && A[k + 1] > A[k]) {
+                        k++;
+                    }
+                    if (A[k] > t) {
+                        A[j] = A[k]; j = k; k = j * 2 + 1;
+                    }
+                    else {
+                        break
+                    };
+                }
+                A[j] = t;
+            }
+        }
+        // console.log('Heap sort - ', heapSort(array).join(','));
+        //== END HEAP SORT ==//
+
+        //== START MERGE SORT ==//
+        const Merge = (a, low, mid, high) => {
+            var b = new Array(high + 1 - low), h, i, j = mid + 1, k, h = low, i = 0;
+            while (h <= mid && j <= high) {
+                if (a[h] <= a[j]) {
+                    b[i] = a[h]; h++;
+                } else {
+                    b[i] = a[j]; j++;
+                }
+                i++;
+            }
+            if (h > mid) {
+                for (k = j; k <= high; k++) {
+                    b[i] = a[k]; i++;
+                }
+            } else {
+                for (k = h; k <= mid; k++) {
+                    b[i] = a[k]; i++;
+                }
+            }
+            for (k = 0; k <= high - low; k++) {
+                a[k + low] = b[k];
+            }
+            return a;
+        }
+
+        const MergeSort = A => {
+            function merge_sort(a, low, high) {
+                if (low < high) {
+                    let mid = Math.floor((low + high) / 2);
+                    merge_sort(a, low, mid);
+                    merge_sort(a, mid + 1, high);
+                    Merge(a, low, mid, high);
+                }
+            }
+            let n = A.length;
+            merge_sort(A, 0, n - 1);
+            return A;
+        }
+        // console.log('Merge sort - ', MergeSort(array).join(','));
+        //== END MERGE SORT ==//
+
+        //== START COCKTAIL SORT ==//
+        const cocktailSort = A => {
+            let i = 0
+            let j = A.length - 1
+            let s = true, t;
+            while (i < j && s) {
+                s = false;
+                for (var k = i; k < j; k++) {
+                    if (A[k] > A[k + 1]) {
+                        t = A[k];
+                        A[k] = A[k + 1];
+                        A[k + 1] = t;
+                        s = true;
+                    }
+                }
+                j--;
+                if (s) {
+                    s = false;
+                    for (var k = j; k > i; k--) {
+                        if (A[k] < A[k - 1]) {
+                            t = A[k];
+                            A[k] = A[k - 1];
+                            A[k - 1] = t;
+                            s = true;
+                        }
+                    }
+                }
+                i++;
+            }
+            return A;
+        }
+        // console.log('Cocktail sort - ', cocktailSort(array).join(','));
+        //== END COCKTAIL SORT ==//
+
+       
+
+
+
+
+    </script>
+</body>
+
+</html>

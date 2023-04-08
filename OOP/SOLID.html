@@ -1,0 +1,127 @@
+<!-- https://dou.ua/lenta/articles/solid-principles/ -->
+
+<!-- ==== ПРОБЛЕМИ, ПРИ ВЕЛИКІЙ КІЛЬКОСТІ ЗАЛЕЖНОСТЕЙ (СПАГЕТТІ КОД) ==== -->
+<!-- жорсткість (Rigidity): кожна зміна викликає багато інших змін; -->
+<!-- крихкість (Fragility): зміни в одній частині ламають роботу інших частин; -->
+<!-- нерухомість (Immobility): код не можна повторно використати за межами його контексту. -->
+
+<!-- ==== ПРИНЦИПИ SOLID ==== -->
+<!-- 1) Принцип єдиного обов’язку (Single Responsibility Principle) -->
+<!-- Кожен клас повинен виконувати лише один обов’язок.  -->
+<!-- Всі методи класу мають бути сфокусовані на виконання одного спільного завдання -->
+<!-- Якшо класс відповідає за вирішення декількох задач, його методи будуть звязані -->
+
+<!-- Знизу не вірний приклад, тому що метод hasUnlimitedContentAccess потрібно винести в окремий класс -->
+<!-- Шоб ми і в інших класах могли перевіряти наявність підписки в юзера -->
+<!--   class User {
+        constructor(
+            public readonly firstName: string,
+            public readonly lastName: string,
+            public readonly subscriptionType: SubscriptionTypes,
+            public readonly subscriptionExpirationDate: Date
+        ) { }
+
+        public get name(): string {
+            return `${this.firstName} ${this.lastName}`;
+        }
+
+        public hasUnlimitedContentAccess() {
+            const now = new Date();
+
+            return this.subscriptionType === SubscriptionTypes.PREMIUM
+                && this.subscriptionExpirationDate > now;
+        }
+    }  -->
+
+<!-- 2) Принцип відкритості/закритості (Open/Close Principle) -->
+<!-- Класи мають бути відкриті до розширення, але закриті для модифікації, змін методів. -->
+<!-- Якщо є клас, функціонал якого передбачає чимало розгалужень  то потрібно спроєктувати клас таким чином, -->
+<!-- щоб нові розгалуження або кроки не призводили до його модифікації. -->
+
+<!-- Якшо я захочу добавити новий спосіб оплати, мені прийдеться писати новий if, getMethod потрібно винести в новий класс -->
+<!-- Або зробити класи, для кожного з методів оплати -->
+<!-- class PaymentMethod {
+    public getMethod(method) {
+      if(method == 'stripe') {
+        // implementation
+      }
+      if(method == 'cash') {
+        // implementation
+      }
+      if(method == 'checks') {
+        // implementation
+      }
+    }
+  } -->
+
+<!-- 3) Принцип підстановки Лісков (Liskov Substitution Principle) -->
+<!-- Якщо об’єкт батьківського класу замінити об’єктом його наслідуваного класу -->
+<!-- то програма має продовжувати працювати коректно. -->
+<!-- Якщо ми перевизначаємо похідні методи від батьківського класу -->
+<!-- то нова поведінка не має суперечити поведінці базового класу. -->
+
+<!-- Перевизначення метода в наслідуваногому классі -->
+<!-- class BaseClass {
+    public add(a: number, b: number): number {
+      return a + b;
+    }
+  }
+   
+  class DerivedClass extends BaseClass {
+    public add(a: number, b: number): number {
+      throw new Error('This operation is not supported');
+    }
+  } -->
+
+<!-- 4) Принцип розділення інтерфейсу (Interface Segregation Principle) -->
+<!-- Краще, коли є багато спеціалізованих інтерфейсів, ніж один загальний. -->
+<!-- Клієнти не мають залежити від класів, які вони не використовують -->
+
+<!-- з файлу (FileSource) ми читаємо локально, то метод Connect зайвий.  -->
+<!-- interface IDataSource {
+    connect(): Promise<boolean>;
+    read(): Promise<string>;
+  }
+   
+  class DbSource implements IDataSource {
+    connect(): Promise<boolean> {// implementation}
+    read(): Promise<string> {// implementation}
+  }
+   
+  class FileSource implements IDataSource {
+    connect(): Promise<boolean> {// implementation}
+    read(): Promise<string> {// implementation}
+  } -->
+
+  <!-- 5) Принцип інверсії залежностей (Dependency Inversion Principle) -->
+
+<!-- - високорівневі модулі не повинні залежати від низькорівневих. І ті, і ті мають залежати від абстракцій; -->
+<!-- - абстракції не мають залежати від деталей реалізації. Деталі реалізації повинні залежати від абстракцій. -->
+
+<!-- UserService використовує деталі реалізації трьох модулів нижнього рівня: localStorage, fetch та Date -->
+<!-- Треба переписати все на окремі класи, і використовувати класс LocalStorageCache, який буде працювати з localStorage -->
+<!-- class UserService {
+    async getUser(): Promise<User> {
+      const now = new Date();
+   
+      const item = localStorage.getItem('user');
+      const cachedUserData = item && JSON.parse(item);
+   
+      if (cachedUserData && new Date(cachedUserData.expirationDate) > now) {
+        return cachedUserData.user;
+      }
+   
+      const response = await fetch('/user');
+      const user = await response.json();
+   
+      const expirationDate = new Date();
+      expirationDate.setHours(expirationDate.getHours() + 1);
+   
+      localStorage.setItem('user', JSON.stringify({
+        user,
+        expirationDate
+      }));
+   
+      return user;
+    }
+  } -->
