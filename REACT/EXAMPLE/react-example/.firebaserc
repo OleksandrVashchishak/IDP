@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "qc-able"
+  },
+  "targets": {
+    "qc-able": {
+      "hosting": {
+        "development": [
+          "qc-able"
+        ],
+        "stage": [
+          "qc-able-stage"
+        ]
+      }
+    }
+  }
+}
